@@ -14,6 +14,7 @@ void processInput(GLFWwindow *window);
 // settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
+float mix = 0.00;
 
 int main()
 {
@@ -132,7 +133,6 @@ int main()
     stbi_image_free(data);
 
 
-
     // render loop
     // -----------
     while (!glfwWindowShouldClose(window))
@@ -157,6 +157,7 @@ int main()
         ourShader.use();
         ourShader.setInt("texture1", 0);
         ourShader.setInt("texture2", 1);
+        ourShader.setFloat("mixer", mix);
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
@@ -184,6 +185,14 @@ void processInput(GLFWwindow *window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
+    if(glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+        if(mix < 1) {
+            mix += 0.01;
+        }
+    if(glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+        if(mix > 0) {
+            mix -= 0.01;
+        }
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
