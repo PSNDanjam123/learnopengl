@@ -8,6 +8,10 @@
 
 #include <iostream>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
 
@@ -132,11 +136,16 @@ int main()
     }
     stbi_image_free(data);
 
+    glm::mat4 pos;
+    float angle = 0;
 
     // render loop
     // -----------
     while (!glfwWindowShouldClose(window))
     {
+        angle += 0.1;
+        pos = glm::rotate(pos, glm::radians(angle), glm::vec3(0.0f, 0.0f, 1.0f));
+
         // input
         // -----
         processInput(window);
@@ -158,6 +167,10 @@ int main()
         ourShader.setInt("texture1", 0);
         ourShader.setInt("texture2", 1);
         ourShader.setFloat("mixer", mix);
+
+        unsigned int rotate = glGetUniformLocation(ourShader.ID, "rotate");
+        glUniformMatrix4fv(rotate, 1, GL_FALSE, glm::value_ptr(pos));
+
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
