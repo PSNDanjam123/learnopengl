@@ -136,15 +136,21 @@ int main()
     }
     stbi_image_free(data);
 
-    glm::mat4 pos;
-    float angle = 0;
+    float angle = 0.1f;
+
+    glm::mat4 model;
+    glm::mat4 view;
+    glm::mat4 projection;
+
+    view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+
+    projection = glm::perspective(glm::radians(90.0f), (float)SCR_WIDTH/(float)SCR_HEIGHT, 0.1f, 100.0f);
 
     // render loop
     // -----------
     while (!glfwWindowShouldClose(window))
     {
-        angle += 0.1;
-        pos = glm::rotate(pos, glm::radians(angle), glm::vec3(0.0f, 0.0f, 1.0f));
+        model = glm::rotate(model, glm::radians(angle), glm::vec3(0.0f, 1.0f, 1.0f));
 
         // input
         // -----
@@ -168,8 +174,15 @@ int main()
         ourShader.setInt("texture2", 1);
         ourShader.setFloat("mixer", mix);
 
-        unsigned int rotate = glGetUniformLocation(ourShader.ID, "rotate");
-        glUniformMatrix4fv(rotate, 1, GL_FALSE, glm::value_ptr(pos));
+        unsigned int modelLoc = glGetUniformLocation(ourShader.ID, "model");
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+        unsigned int viewLoc = glGetUniformLocation(ourShader.ID, "view");
+        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+
+        unsigned int projectionLoc = glGetUniformLocation(ourShader.ID, "projection");
+        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+
 
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
