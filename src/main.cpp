@@ -68,11 +68,19 @@ int main()
     }
 
     // Init shaders
-    Shader ourShader("../src/shaders/shader.vs", "../src/shaders/shader.fs"); 
+    Shader lightingShader("../src/shaders/lightingShader.vs", "../src/shaders/lightingShader.fs"); 
+    Shader lampShader("../src/shaders/lampShader.vs", "../src/shaders/lampShader.fs");
 
     // Create cube
     unsigned int cubeVAO, cubeVBO;
     Cube::createCube(cubeVAO, cubeVBO, 0);
+
+    // Create lamp
+    unsigned int lampVAO, lampVBO;
+    Cube::createCube(lampVAO, lampVBO, 0);
+
+    // Enable depth testing
+    glEnable(GL_DEPTH_TEST);
 
     // setup game loop
     while (!glfwWindowShouldClose(window))
@@ -89,21 +97,44 @@ int main()
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // set shader
-        ourShader.use();
+        // Draw cube ---------------------------------------
+        
+        // Set shader
+        lightingShader.use();
+        lightingShader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
+        lightingShader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
 
-        // setup camera
+        // Setup camera
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-        ourShader.setMat4("projection", projection);
+        lightingShader.setMat4("projection", projection);
         glm::mat4 view = camera.GetViewMatrix();
-        ourShader.setMat4("view", view);
+        lightingShader.setMat4("view", view);
 
-        // draw cube
+        // Setup Cube
         glBindVertexArray(cubeVAO);
         glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f);
         glm::mat4 model;
         model = glm::translate(model, pos);
-        ourShader.setMat4("model", model);
+        lightingShader.setMat4("model", model);
+
+        // Draw Shape
+        glDrawArrays(GL_TRIANGLES, 0, Cube::vertCount);
+
+        // Draw lamp -------------------------------------
+        
+        // Set shader
+        lampShader.use();
+        lampShader.setMat4("projection", projection);
+        lampShader.setMat4("view", view);
+
+        // Setup Lamp
+        glBindVertexArray(lampVAO);
+        pos = glm::vec3(1.2f, 1.0f, 2.0f);
+        model = glm::translate(glm::mat4(), pos);
+        model = glm::scale(model, glm::vec3(0.2f));
+        lampShader.setMat4("model", model);
+
+        // Draw Shape
         glDrawArrays(GL_TRIANGLES, 0, Cube::vertCount);
 
         // swap buffers
