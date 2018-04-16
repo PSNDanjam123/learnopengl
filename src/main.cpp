@@ -72,14 +72,7 @@ int main()
 
     // Create cube
     unsigned int cubeVAO, cubeVBO;
-    glGenVertexArrays(1, &cubeVAO);
-    glGenBuffers(1, &cubeVBO);
-    glBindVertexArray(cubeVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
-    glBufferData(GL_ARRAY_BUFFER, Cube::cubeSize, &Cube::vertices[0], GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, Cube::vertSize, (void*)0);
-    glEnableVertexAttribArray(0);
-    glBindVertexArray(0);
+    Cube::createCube(cubeVAO, cubeVBO, 0);
 
     // setup game loop
     while (!glfwWindowShouldClose(window))
