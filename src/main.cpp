@@ -2,10 +2,7 @@
 #define STB_IMAGE_IMPLEMENTATION // Needed for stb_image.h to work
 
 // system includes
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
 #include <stb_image.h>
-#include <iostream>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -19,6 +16,9 @@
 //camera
 Camera camera = Camera(glm::vec3(0.0f, 0.0f, 3.0f));
 
+//Cubes
+unsigned int cubeVAO, cubeVBO, lampVAO, lampVBO;
+
 int main()
 {
     GLFWwindow* window = Window::init("Learn OpenGL");
@@ -27,12 +27,8 @@ int main()
     Shader lightingShader("../src/shaders/lightingShader.vs", "../src/shaders/lightingShader.fs"); 
     Shader lampShader("../src/shaders/lampShader.vs", "../src/shaders/lampShader.fs");
 
-    // Create cube
-    unsigned int cubeVAO, cubeVBO;
+    // Create cubes
     Cube::createCube(cubeVAO, cubeVBO, 0);
-
-    // Create lamp
-    unsigned int lampVAO, lampVBO;
     Cube::createCube(lampVAO, lampVBO, 0);
 
     // Enable depth testing
