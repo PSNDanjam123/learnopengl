@@ -19,6 +19,9 @@ Camera camera = Camera(glm::vec3(0.0f, 0.0f, 3.0f));
 //Cubes
 unsigned int cubeVAO, cubeVBO, lampVAO, lampVBO;
 
+//Lights position
+glm::vec3 lightPos = glm::vec3(1.2f,1.0f,2.0f);
+
 int main()
 {
     GLFWwindow* window = Window::init("Learn OpenGL");
@@ -30,6 +33,9 @@ int main()
     // Create cubes
     Cube::createCube(cubeVAO, cubeVBO, 0);
     Cube::createCube(lampVAO, lampVBO, 0);
+
+    // Bind Normals
+    Cube::bindNormals(cubeVAO, cubeVBO, 1);
 
     // Enable depth testing
     glEnable(GL_DEPTH_TEST);
@@ -66,6 +72,7 @@ int main()
         glm::mat4 model;
         model = glm::translate(model, pos);
         lightingShader.setMat4("model", model);
+        lightingShader.setVec3("lightPos", lightPos);
 
         // Draw Shape
         glDrawArrays(GL_TRIANGLES, 0, Cube::vertCount);
@@ -79,7 +86,7 @@ int main()
 
         // Setup Lamp
         glBindVertexArray(lampVAO);
-        pos = glm::vec3(1.2f, 1.0f, 2.0f);
+        pos = lightPos;
         model = glm::translate(glm::mat4(), pos);
         model = glm::scale(model, glm::vec3(0.2f));
         lampShader.setMat4("model", model);
