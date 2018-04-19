@@ -73,6 +73,7 @@ int main()
         model = glm::translate(model, pos);
         lightingShader.setMat4("model", model);
         lightingShader.setVec3("lightPos", lightPos);
+        lightingShader.setVec3("viewPos", camera.Position);
 
         // Draw Shape
         glDrawArrays(GL_TRIANGLES, 0, Cube::vertCount);
