@@ -1,8 +1,6 @@
 // definitions
-#define STB_IMAGE_IMPLEMENTATION // Needed for stb_image.h to work
 
 // system includes
-#include <stb_image.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -12,6 +10,7 @@
 #include "./shader.h"   // Loading and compiling shader code
 #include "./camera.h"   // Camera object
 #include "./cube.h"     // Cube code
+#include "./texture.h"  // Texture loader
 
 //camera
 Camera camera = Camera(glm::vec3(0.0f, 0.0f, 3.0f));
@@ -37,6 +36,12 @@ int main()
     // Bind Normals
     Cube::bindNormals(cubeVAO, cubeVBO, 1);
 
+    // Bind Textures
+    Cube::bindTexture(cubeVAO, cubeVBO, 2);
+
+    // Load Textures
+    unsigned int texture = Texture::load("../assets/wall.jpg", GL_RGB, GL_REPEAT, GL_LINEAR);
+
     // Enable depth testing
     glEnable(GL_DEPTH_TEST);
 
@@ -59,6 +64,10 @@ int main()
         lightingShader.use();
         lightingShader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
         lightingShader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
+
+        // Set texture
+        Texture::activate(GL_TEXTURE0, texture);
+        lightingShader.setInt("texture", 0);
 
         // Setup camera
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)Window::SCR_WIDTH / (float)Window::SCR_HEIGHT, 0.1f, 100.0f);

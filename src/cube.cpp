@@ -73,13 +73,26 @@ void Cube::createCube(unsigned int &VAO, unsigned int &VBO, const unsigned int &
 }
 
 void Cube::bindNormals(unsigned int &VAO, unsigned int &VBO, const unsigned int &normAttribPointer) {
-    //Bin the objects
+    //Bind the objects
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
     //Set the attribute pointer for the normal data and enable it
     glVertexAttribPointer(normAttribPointer, 3, GL_FLOAT, GL_FALSE, Cube::vertSize, (void*)(5 * sizeof(float)));
     glEnableVertexAttribArray(normAttribPointer);
+
+    //unbind the VAO
+    glBindVertexArray(0);
+}
+
+void Cube::bindTexture(unsigned int &VAO, unsigned int &VBO, const unsigned int &texAttribPointer) {
+    //Bind the objects
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+    //Set the attribute pointer for the texture data and enable it
+    glVertexAttribPointer(texAttribPointer, 2, GL_FLOAT, GL_FALSE, Cube::vertSize, (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(texAttribPointer);
 
     //unbind the VAO
     glBindVertexArray(0);
